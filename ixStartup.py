@@ -7,11 +7,14 @@
 import win32com.client, os
 from win32com.client import constants
 import inspect
-
+import ntpath
 
 null = None
 false = 0
 true = 1
+
+recent_paths = []
+recent_groups_list = []
 
 def XSILoadPlugin( in_reg ):
 	in_reg.Author = "ben@ioxu.com"
@@ -61,6 +64,8 @@ def ixStartupSplash_Execute(  ):
 
 def DoSplash():
 	import os
+	global recent_groups_list 
+	global recent_paths 
 
 	recentPathsFile = os.path.join( os.getenv("XSI_USERHOME"), 'Data', 'Preferences', 'RecentFileMenus.xml')
 	print("recent paths file: %s"%recentPathsFile)
@@ -113,7 +118,12 @@ def DoSplash():
 		layout.AddRow()
 		buttonbasename = "s%s"%button_number
 		Application.LogMessage( "ixStartup: add button %s"%buttonbasename )
-		layout.AddButton( buttonbasename , p )
+		basep = ntpath.basename(p)
+		#Application.LogMessage("#####################%s"%p)
+		layout.AddButton( buttonbasename , basep )
+		prop.AddParameter3( buttonbasename + "_path", constants.siString, p)
+		#pathitem = layout.AddItem( buttonbasename + "_path" )
+		#pathitem.SetAttribute(constants.siUINoLabel, True)
 		buttons_scenes_callback_basenames.append( buttonbasename )
 		layout.AddSpacer()
 		modtime = modification_date(p)
@@ -152,8 +162,11 @@ def DoSplash():
 		logicstr += """\ndef """ + i + """_OnClicked():
 			    #Application.LogMessage( "ixStartup: button pressed: %s "%\""""+i+"""\")
 			    #recent_paths[ recent_groups_list.index("RECENT_SCENES_MENU") ]["""+i+"""]
-			    this_buttons_path = PPG.PPGLayout.Item( \""""+i+"""\").Label
-			    #Application.LogMessage( this_buttons_path )
+
+
+			    #this_buttons_path = PPG.PPGLayout.Item( \""""+i+"""\").Label
+			    this_buttons_path = PPG."""+i+"""_path.Value
+
 			    Application.LogMessage( "ixStartup: opening scene %s "%this_buttons_path)
 			    
 			    PPG.Close()
