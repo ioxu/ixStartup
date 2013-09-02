@@ -127,7 +127,9 @@ def DoSplash():
 		buttons_scenes_callback_basenames.append( buttonbasename )
 		layout.AddSpacer()
 		modtime = modification_date(p)
-		layout.AddStaticText(  prettydate(modtime) +" "+ modtime.strftime("%a  %c  %p") , 0, 0)
+		#layout.AddStaticText(  prettydate(modtime) +" "+ modtime.strftime("%a  %c  %p") , 0, 0)
+		layout.AddStaticText( prettydate(modtime), 0, 0)
+		#layout.AddStaticText( modtime.strftime("%a  %c  %p"), 0, 0)
 		layout.EndRow()
 		button_number += 1
 
@@ -140,11 +142,14 @@ def DoSplash():
 	for p in recent_paths[ recent_groups_list.index("RECENT_MODELS_MENU") ]:
 		layout.AddRow()
 		buttonbasename = "m%s"%button_number
-		layout.AddButton( buttonbasename , p )
+		basep = ntpath.basename(p)
+		layout.AddButton( buttonbasename , basep )
 		buttons_models_callback_basenames.append( buttonbasename )
 		layout.AddSpacer()
 		modtime = modification_date(p)
-		layout.AddStaticText(  prettydate(modtime) +" "+ modtime.strftime("%a  %c  %p") , 0, 0)		
+		#layout.AddStaticText(  prettydate(modtime) +" "+ modtime.strftime("%a  %c  %p") , 0, 0)		
+		layout.AddStaticText( prettydate(modtime), 0, 0)
+		#layout.AddStaticText( modtime.strftime("%a  %c  %p"), 0, 0)
 		layout.EndRow()
 		model_number += 1
 
