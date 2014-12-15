@@ -109,8 +109,9 @@ def DoSplash():
 	layout = prop.PPGLayout
 	prop.Parameters("Name").SetCapabilityFlag( constants.siNotInspectable, True  )
 
+	# -----------------------------------
+	# recent scenes
 	buttons_scenes_callback_basenames = []
-
 	layout.Clear()
 	layout.AddGroup("Scenes")
 	button_number = 0
@@ -119,24 +120,20 @@ def DoSplash():
 		buttonbasename = "s%s"%button_number
 		Application.LogMessage( "ixStartup: add button %s"%buttonbasename )
 		basep = ntpath.basename(p)
-		#Application.LogMessage("#####################%s"%p)
 		layout.AddButton( buttonbasename , basep )
 		prop.AddParameter3( buttonbasename + "_path", constants.siString, p)
-		#pathitem = layout.AddItem( buttonbasename + "_path" )
-		#pathitem.SetAttribute(constants.siUINoLabel, True)
 		buttons_scenes_callback_basenames.append( buttonbasename )
 		layout.AddSpacer()
 		modtime = modification_date(p)
-		#layout.AddStaticText(  prettydate(modtime) +" "+ modtime.strftime("%a  %c  %p") , 0, 0)
 		layout.AddStaticText( prettydate(modtime), 0, 0)
-		#layout.AddStaticText( modtime.strftime("%a  %c  %p"), 0, 0)
 		layout.EndRow()
 		button_number += 1
 
 	layout.EndGroup()
 
+	# -----------------------------------
+	# recent models
 	buttons_models_callback_basenames = []
-
 	layout.AddGroup("Models")
 	model_number = 0
 	for p in recent_paths[ recent_groups_list.index("RECENT_MODELS_MENU") ]:
@@ -147,9 +144,7 @@ def DoSplash():
 		buttons_models_callback_basenames.append( buttonbasename )
 		layout.AddSpacer()
 		modtime = modification_date(p)
-		#layout.AddStaticText(  prettydate(modtime) +" "+ modtime.strftime("%a  %c  %p") , 0, 0)		
 		layout.AddStaticText( prettydate(modtime), 0, 0)
-		#layout.AddStaticText( modtime.strftime("%a  %c  %p"), 0, 0)
 		layout.EndRow()
 		model_number += 1
 
@@ -163,7 +158,7 @@ def DoSplash():
 	# logic
 	logicstr = "# DYNAMICALLY GENERATED BUTTON CALLBACKS"
 	for i in buttons_scenes_callback_basenames:
-		Application.LogMessage("""\ndef """ + i + """_OnClicked():""" ) 
+		#Application.LogMessage("""\ndef """ + i + """_OnClicked():""" ) 
 		logicstr += """\ndef """ + i + """_OnClicked():
 			    #Application.LogMessage( "ixStartup: button pressed: %s "%\""""+i+"""\")
 			    #recent_paths[ recent_groups_list.index("RECENT_SCENES_MENU") ]["""+i+"""]
@@ -186,19 +181,12 @@ def DoSplash():
 	layout.Logic = logicstr
 
 	# inspect
-	#button = Application.InspectObj( prop, None, "ixStartup", constants.siModal, False )
 	button = Application.InspectObj( prop, None, "ixStartup", constants.siLockAndForceNew , False )
-	#print "ixStartup: %s"%button # returns False if "okay" button and True if "Cancel"  button
-	
-	#Application.DeleteObj( prop )
-
-
 
 import datetime
 def modification_date(filename):
     t = os.path.getmtime(filename)
     return datetime.datetime.fromtimestamp(t)
-
 
 def prettydate(d):
     diff = datetime.datetime.now() - d #utcnow() - d
