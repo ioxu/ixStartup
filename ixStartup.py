@@ -70,6 +70,9 @@ def DoSplash():
 	recentPathsFile = os.path.join( os.getenv("XSI_USERHOME"), 'Data', 'Preferences', 'RecentFileMenus.xml')
 	print("recent paths file: %s"%recentPathsFile)
 
+	if not os.path.isfile( recentPathsFile ):
+		return
+
 	from xml.dom import minidom
 	xmldoc = minidom.parse(recentPathsFile)
 
