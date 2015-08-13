@@ -141,9 +141,11 @@ def DoSplash():
 	model_number = 0
 	for p in recent_paths[ recent_groups_list.index("RECENT_MODELS_MENU") ]:
 		layout.AddRow()
-		buttonbasename = "m%s"%button_number
+		buttonbasename = "m%s"%model_number
+		Application.LogMessage( "ixStartup: add button %s"%buttonbasename )
 		basep = ntpath.basename(p)
 		layout.AddButton( buttonbasename , basep )
+		prop.AddParameter3( buttonbasename + "_path", constants.siString, p)		
 		buttons_models_callback_basenames.append( buttonbasename )
 		layout.AddSpacer()
 		modtime = modification_date(p)
@@ -160,6 +162,8 @@ def DoSplash():
 	#print buttons_scenes_callback_basenames
 	# logic
 	logicstr = "# DYNAMICALLY GENERATED BUTTON CALLBACKS"
+	
+	# scenes
 	for i in buttons_scenes_callback_basenames:
 		#Application.LogMessage("""\ndef """ + i + """_OnClicked():""" ) 
 		logicstr += """\ndef """ + i + """_OnClicked():
@@ -178,6 +182,25 @@ def DoSplash():
 			    #PPG.Close()
 				\n"""
 	
+	# models
+	for i in buttons_models_callback_basenames:
+		#Application.LogMessage("""\ndef """ + i + """_OnClicked():""" ) 
+		logicstr += """\ndef """ + i + """_OnClicked():
+			    #Application.LogMessage( "ixStartup: button pressed: %s "%\""""+i+"""\")
+			    #recent_paths[ recent_groups_list.index("RECENT_SCENES_MENU") ]["""+i+"""]
+
+
+			    #this_buttons_path = PPG.PPGLayout.Item( \""""+i+"""\").Label
+			    this_buttons_path = PPG."""+i+"""_path.Value
+
+			    Application.LogMessage( "ixStartup: importing model %s "%this_buttons_path)
+			    
+			    PPG.Close()
+			    Application.DeleteObj( PPG.Inspected)
+			    Application.SICreateRefModel( this_buttons_path )
+			    #PPG.Close()
+				\n"""
+
 	#print logicstr
 
 	layout.Language = "Python"
